@@ -36,7 +36,7 @@ export async function getStaticProps() {
         return {
             props: { movies: JSON.parse(JSON.stringify(movies)) },
         };
-    } catch (error) {
-        console.log(error);
+    } catch (e) {
+        console.log(e);
     }
 }
