@@ -11,7 +11,7 @@ export default function Movies({ movies }) {
                 {movies.map((movie) => (
                     <li>
                         <h2>{movie.title}</h2>
-                        <h3>{movie._id}</h3>
+                        <h3>{movie.metacritic}</h3>
                         <p>{movie.plot}</p>
                     </li>
                 ))}
@@ -37,6 +37,6 @@ export async function getServerSideProps(context) {
             props: { movies: JSON.parse(JSON.stringify(movies)) },
         };
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
