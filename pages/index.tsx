@@ -1,7 +1,39 @@
-import Head from 'next/head'
-import clientPromise from '../lib/mongodb'
+import Head from "next/head";
+import clientPromise from "../lib/mongodb";
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
-export default function Home({ isConnected }) {
+type ConnectionStatus = {
+  isConnected: boolean;
+};
+
+export const getServerSideProps: GetServerSideProps<
+  ConnectionStatus
+> = async () => {
+  try {
+    await clientPromise;
+    // `await clientPromise` will use the default database passed in the MONGODB_URI
+    // However you can use another database (e.g. myDatabase) by replacing the `await clientPromise` with the following code:
+    //
+    // `const client = await clientPromise`
+    // `const db = client.db("myDatabase")`
+    //
+    // Then you can execute queries against your database like so:
+    // db.find({}) or any of the MongoDB Node Driver commands
+
+    return {
+      props: { isConnected: true },
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      props: { isConnected: false },
+    };
+  }
+};
+
+export default function Home({
+  isConnected,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div className="container">
       <Head>
@@ -18,7 +50,7 @@ export default function Home({ isConnected }) {
           <h2 className="subtitle">You are connected to MongoDB</h2>
         ) : (
           <h2 className="subtitle">
-            You are NOT connected to MongoDB. Check the <code>README.md</code>{' '}
+            You are NOT connected to MongoDB. Check the <code>README.md</code>{" "}
             for instructions.
           </h2>
         )}
@@ -48,6 +80,8 @@ export default function Home({ isConnected }) {
 
           <a
             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
             className="card"
           >
             <h3>Deploy &rarr;</h3>
@@ -64,7 +98,7 @@ export default function Home({ isConnected }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
         </a>
       </footer>
@@ -219,28 +253,5 @@ export default function Home({ isConnected }) {
         }
       `}</style>
     </div>
-  )
-}
-
-export async function getServerSideProps(context) {
-  try {
-    await clientPromise
-    // `await clientPromise` will use the default database passed in the MONGODB_URI
-    // However you can use another database (e.g. myDatabase) by replacing the `await clientPromise` with the following code:
-    //
-    // `const client = await clientPromise`
-    // `const db = client.db("myDatabase")`
-    //
-    // Then you can execute queries against your database like so:
-    // db.find({}) or any of the MongoDB Node Driver commands
-
-    return {
-      props: { isConnected: true },
-    }
-  } catch (e) {
-    console.error(e)
-    return {
-      props: { isConnected: false },
-    }
-  }
+  );
 }

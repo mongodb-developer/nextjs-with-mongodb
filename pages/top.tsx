@@ -1,15 +1,28 @@
+import { ObjectId } from "mongodb";
 import clientPromise from "../lib/mongodb";
+import { GetStaticProps } from "next";
 
-export default function Movies({ movies }) {
+interface Movie {
+    _id: ObjectId;
+    title: string;
+    metacritic: number;
+    plot: string;
+}
+
+interface TopProps {
+    movies: Movie[];
+}
+
+export default function Top({ movies }: TopProps) {
     return (
         <div>
-            <h1>Top 20 Movies of All Time</h1>
+            <h1>Top 1000 Movies of All Time</h1>
             <p>
                 <small>(According to Metacritic)</small>
             </p>
             <ul>
                 {movies.map((movie) => (
-                    <li>
+                    <li key={movie._id.toString()}>
                         <h2>{movie.title}</h2>
                         <h3>{movie.metacritic}</h3>
                         <p>{movie.plot}</p>
@@ -20,7 +33,7 @@ export default function Movies({ movies }) {
     );
 }
 
-export async function getServerSideProps(context) {
+export const getStaticProps: GetStaticProps<TopProps> = async () => {
     try {
         const client = await clientPromise;
 
@@ -30,7 +43,7 @@ export async function getServerSideProps(context) {
             .collection("movies")
             .find({})
             .sort({ metacritic: -1 })
-            .limit(20)
+            .limit(1000)
             .toArray();
 
         return {
@@ -38,5 +51,8 @@ export async function getServerSideProps(context) {
         };
     } catch (e) {
         console.error(e);
+        return {
+            props: { movies: [] },
+        };
     }
-}
+};
