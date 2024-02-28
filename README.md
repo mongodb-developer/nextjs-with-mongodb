@@ -31,21 +31,6 @@ yarn create next-app --example with-mongodb mflix
 pnpm create next-app --example with-mongodb mflix
 ```
 
-While running the above command in `node version > 18` will throw an error as following: 
-
-```
-? Could not download "with-mongodb" because of a connectivity issue between your machine and GitHub.
-✔ Could not download "with-mongodb" because of a connectivity issue between your machine and GitHub.
-Do you want to use the default template instead? (Y/n)
-```
-
-The issue is in the node-tar `extract()` which emits the close event. There is a 
-[GitHub issue open](https://github.com/vercel/next.js/issues/39321) to address this, but the current workaround is described below:
-
-You can either use `node version < 18` or type `Y` to get the default template downloaded:
-```
-Do you want to use the default template instead? (Y/n) Y
-```
 After that navigate to the project directory by running
 ```
 cd mflix
