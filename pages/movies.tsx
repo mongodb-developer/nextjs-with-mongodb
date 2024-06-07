@@ -1,4 +1,4 @@
-import clientPromise from "../lib/mongodb";
+import client from "../lib/mongodb";
 import { GetServerSideProps } from 'next';
 
 interface Movie {
@@ -36,7 +36,6 @@ export default Movies;
 
 export const getServerSideProps: GetServerSideProps = async () => {
     try {
-        const client = await clientPromise;
         const db = client.db("sample_mflix");
         const movies = await db
             .collection("movies")

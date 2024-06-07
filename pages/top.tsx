@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import clientPromise from "../lib/mongodb";
+import client from "../lib/mongodb";
 import { GetStaticProps } from "next";
 
 interface Movie {
@@ -35,8 +35,6 @@ export default function Top({ movies }: TopProps) {
 
 export const getStaticProps: GetStaticProps<TopProps> = async () => {
     try {
-        const client = await clientPromise;
-
         const db = client.db("sample_mflix");
 
         const movies = await db
